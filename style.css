@@ -1,0 +1,37 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: cadetblue;
+}
+.header {
+  text-align: center;
+}
+
+.header h1 {
+  margin: 20px;
+}
+
+.card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin: 50px;
+  width: 400px;
+  height: 300px;
+  background-color: antiquewhite;
+  cursor: pointer;
+  border-radius: 10px;
+}
+
+.property {
+  margin: auto 0;
+}
+
+.title {
+  font-size: 26px;
+}
