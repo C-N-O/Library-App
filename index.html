@@ -13,14 +13,72 @@
     <title>Library</title>
   </head>
   <body>
-    <div class="header"><h1>Library</h1></div>
-    <div class="container">
-      <!-- <div class="card">
-        <div class="titleEL"></div>
-        <div class="authorEL"></div>
-        <div class="numPagesEL"></div>
-        <div class="isCompletedEL"></div>
-      </div> -->
-    </div>
+    <header>
+      <button class="btn add">ADD BOOK</button>
+      <h1>Library</h1>
+      <button class="btn find">FIND BOOK</button>
+    </header>
+
+    <main id="main">
+      <div class="container">
+        <!-- <div class="card">
+              <div class="titleEL"></div>
+              <div class="authorEL"></div>
+              <div class="numPagesEL"></div>
+              <div class="isCompletedEL"></div>  
+            </div> -->
+      </div>
+      <div id="myModal" class="modal">
+        <div class="form-container">
+          <input
+            class="inputField"
+            id="formTitle"
+            placeholder="Title"
+            type="text"
+            autocomplete="off"
+          />
+          <input
+            class="inputField"
+            id="formAuthor"
+            placeholder="Author"
+            type="text"
+            autocomplete="off"
+          />
+          <input
+            class="inputField"
+            id="formNumpages"
+            placeholder="Number of pages"
+            type="number"
+            autocomplete="off"
+          />
+
+          <div id="formCompleted">
+            <h3>Have you completed this book?</h3>
+            <label
+              ><input
+                type="radio"
+                name="completed"
+                id="yes"
+                value="yes"
+              />Yes</label
+            >
+            <label
+              ><input
+                type="radio"
+                name="completed"
+                id="no"
+                value="no"
+              />No</label
+            >
+          </div>
+
+          <div class="form-btn">
+            <button class="btn submit">Submit</button>
+            <button class="btn cancel">Cancel</button>
+          </div>
+        </div>
+      </div>
+      <div class="detail">DETAILS</div>
+    </main>
   </body>
 </html>

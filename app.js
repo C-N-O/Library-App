@@ -1,5 +1,3 @@
-//import { v4 as uuidv4 } from 'https://jspm.dev/uuid';
-
 class Book {
   constructor(id, title, author, numPages, isCompleted) {
     this.id = id;
@@ -23,7 +21,6 @@ class Book {
     const str = `"${this.title}, by ${this.author}, has ${
       this.numPages
     } pages and ${this.hasBeenRead()}"`;
-
     return str;
   };
 
@@ -34,55 +31,21 @@ class Book {
 }
 
 const container = document.querySelector('.container');
-// const titleEL = document.querySelector('.titleEL');
-// const authorEL = document.querySelector('.authorEL');
-// const numPagesEL = document.querySelector('.numPagesEL');
-// const isCompletedEL = document.querySelector('.isCompletedEL');
+const modalEL = document.getElementById('myModal');
+const addEL = document.querySelector('.add');
+const submitEL = document.querySelector('.submit');
+const cancelEL = document.querySelector('.cancel');
+
+const formTitle = document.getElementById('formTitle');
+const formAuthor = document.getElementById('formAuthor');
+const formNumpages = document.getElementById('formNumpages');
+
 let myLibrary = [];
+let index = 0;
+let books = [];
 
-const book1 = new Book(
-  uuidv4(),
-  'Things Fall Apart',
-  'Chinua Achebe',
-  300,
-  false
-);
-const book2 = new Book(
-  uuidv4(),
-  'Things Fall Apart',
-  'Chinua Achebe',
-  300,
-  true
-);
-const book3 = new Book(
-  uuidv4(),
-  'Things Fall Apart',
-  'Chinua Achebe',
-  300,
-  false
-);
-const book4 = new Book(
-  uuidv4(),
-  'Things Fall Apart',
-  'Chinua Achebe',
-  300,
-  true
-);
-const book5 = new Book(
-  uuidv4(),
-  'Things Fall Apart',
-  'Chinua Achebe',
-  300,
-  false
-);
-
-const addBooks = () => {
-  book1.addBookToLibrary();
-  book2.addBookToLibrary();
-  book3.addBookToLibrary();
-  book4.addBookToLibrary();
-  book5.addBookToLibrary();
-};
+//hide modal on page load
+modalEL.classList.add('hidden');
 
 const displayBooks = () => {
   myLibrary.forEach(function (el) {
@@ -91,12 +54,67 @@ const displayBooks = () => {
   <div class="author property">Author: ${el.author}</div>
   <div class="numPages property">Number of Pages: ${el.numPages}</div>
   <div class="isCompleted property">Completed: ${
-    el.isCompleted ? 'Yes' : 'No'
+    el.isCompleted == 'yes' ? 'Yes' : 'No'
   }</div>
 </div>`;
     container.insertAdjacentHTML('beforeend', html);
   });
 };
 
-addBooks();
-displayBooks();
+const createBook = () => {
+  container.innerHTML = '';
+  books[index] = new Book(
+    uuidv4(),
+    formTitle.value,
+    formAuthor.value,
+    formNumpages.value,
+    bookIsCompleted()
+  );
+};
+
+const clearInputFields = () => {
+  formTitle.value = '';
+  formAuthor.value = '';
+  formNumpages.value = '';
+  document.getElementById('no').checked = false;
+  document.getElementById('yes').checked = false;
+};
+
+bookIsCompleted = () => {
+  if (document.getElementById('no').checked) {
+    return 'no';
+  } else if (document.getElementById('yes').checked) {
+    return 'yes';
+  }
+};
+
+addEL.addEventListener('click', () => {
+  container.classList.add('hidden');
+  modalEL.classList.remove('hidden');
+  formTitle.focus();
+});
+
+cancelEL.addEventListener('click', () => {
+  clearInputFields();
+  container.classList.remove('hidden');
+  modalEL.classList.add('hidden');
+});
+
+submitEL.addEventListener('click', () => {
+  createBook();
+  books[index].addBookToLibrary();
+  clearInputFields();
+
+  container.classList.remove('hidden');
+  modalEL.classList.add('hidden');
+  index++;
+  displayBooks();
+});
+
+//display this card if Library is empty
+if (myLibrary.length == 0) {
+  container.insertAdjacentHTML(
+    'beforeend',
+    `<div class="card"><h2>You do not have any books in your library. Why not add one ☝️ </h2></div>`
+  );
+}

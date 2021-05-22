@@ -4,15 +4,17 @@
   box-sizing: border-box;
 }
 
-body {
-  background-color: cadetblue;
-}
-.header {
-  text-align: center;
+header {
+  display: flex;
+  justify-content: space-between;
+  background-color: antiquewhite;
+  align-items: center;
+  border-bottom: 2px solid black;
 }
 
-.header h1 {
-  margin: 20px;
+main {
+  display: flex;
+  height: calc(100vh - 70px);
 }
 
 .card {
@@ -20,12 +22,14 @@ body {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  margin: 50px;
+  margin: 10px 50px;
   width: 400px;
+  padding: 20px;
   height: 300px;
   background-color: antiquewhite;
   cursor: pointer;
   border-radius: 10px;
+  overflow: scroll;
 }
 
 .property {
@@ -34,4 +38,67 @@ body {
 
 .title {
   font-size: 26px;
+}
+
+.btn {
+  width: 100px;
+  height: 50px;
+  margin: 10px;
+  cursor: pointer;
+  color: #fff;
+  background-color: #4ace30;
+  border-radius: 5px;
+  border: none;
+  text-transform: uppercase;
+}
+
+.btn:hover {
+  background-color: #4fa1c7;
+}
+
+.form-btn {
+  display: flex;
+}
+.container,
+.modal {
+  background-color: rgb(43, 43, 43);
+  width: 500px;
+  overflow-y: scroll;
+}
+
+.modal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hidden {
+  display: none;
+}
+
+.form-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-container input {
+  margin-bottom: 10px;
+}
+
+.inputField {
+  outline: none;
+  width: 250px;
+  height: 35px;
+  font-size: 30px;
+}
+
+#formCompleted h3,
+label {
+  color: antiquewhite;
+  margin-bottom: 10px;
+  padding: 2px;
+}
+
+.detail {
+  background-color: #4fa1c7;
 }
