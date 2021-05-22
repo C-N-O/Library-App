@@ -31,21 +31,33 @@ class Book {
 }
 
 const container = document.querySelector('.container');
+const searchContainer = document.querySelector('.search-container');
 const modalEL = document.getElementById('myModal');
-const addEL = document.querySelector('.add');
-const submitEL = document.querySelector('.submit');
-const cancelEL = document.querySelector('.cancel');
+const searchModalEL = document.getElementById('searchModal');
+const addBTN = document.querySelector('.add');
+const submitBTN = document.querySelector('.submit');
+const cancelBTN = document.querySelector('.cancel');
+const cancelSearchEL = document.querySelector('.cancelSearch');
+const findEL = document.querySelector('.find');
 
 const formTitle = document.getElementById('formTitle');
 const formAuthor = document.getElementById('formAuthor');
 const formNumpages = document.getElementById('formNumpages');
 
+const searchTitleEL = document.getElementById('searchTitle');
+const searchEL = document.querySelector('.search');
+
 let myLibrary = [];
 let index = 0;
 let books = [];
 
-//hide modal on page load
+//do all these on page load
 modalEL.classList.add('hidden');
+searchModalEL.classList.add('hidden');
+searchContainer.insertAdjacentHTML(
+  'beforeend',
+  `<div class="card"><h2>Want to find a title? Click the Find button ☝️ </h2></div>`
+);
 
 const displayBooks = () => {
   myLibrary.forEach(function (el) {
@@ -88,27 +100,44 @@ bookIsCompleted = () => {
   }
 };
 
-addEL.addEventListener('click', () => {
-  container.classList.add('hidden');
-  modalEL.classList.remove('hidden');
+//accepts an array of elements. Will add or remove the hidden class on each element
+toggle = (elements) => {
+  for (let i = 0; i < elements.length; i++) {
+    elements[i].classList.toggle('hidden');
+  }
+};
+
+addBTN.addEventListener('click', () => {
+  toggle([container, modalEL]);
   formTitle.focus();
 });
 
-cancelEL.addEventListener('click', () => {
-  clearInputFields();
-  container.classList.remove('hidden');
-  modalEL.classList.add('hidden');
-});
-
-submitEL.addEventListener('click', () => {
+submitBTN.addEventListener('click', () => {
   createBook();
   books[index].addBookToLibrary();
   clearInputFields();
-
-  container.classList.remove('hidden');
-  modalEL.classList.add('hidden');
+  toggle([container, modalEL]);
   index++;
   displayBooks();
+});
+
+cancelBTN.addEventListener('click', () => {
+  clearInputFields();
+  toggle([container, modalEL]);
+});
+
+findEL.addEventListener('click', () => {
+  toggle([searchContainer, searchModalEL]);
+  searchTitleEL.focus();
+});
+
+searchEL.addEventListener('click', () => {
+  console.log(searchTitleEL.value);
+});
+
+cancelSearchEL.addEventListener('click', () => {
+  toggle([searchContainer, searchModalEL]);
+  searchTitleEL.value = '';
 });
 
 //display this card if Library is empty

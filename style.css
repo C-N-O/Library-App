@@ -73,7 +73,7 @@ main {
 }
 
 .hidden {
-  display: none;
+  display: none !important;
 }
 
 .form-container {
@@ -101,4 +101,19 @@ label {
 
 .detail {
   background-color: #4fa1c7;
+  width: calc(100vw - 1000px);
+}
+
+.search-container,
+.search-modal {
+  background-color: rgb(43, 43, 43);
+  width: 500px;
+  overflow-y: scroll;
+}
+
+.search-modal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
