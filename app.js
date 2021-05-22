@@ -107,18 +107,33 @@ toggle = (elements) => {
   }
 };
 
+//validate the new book info
+validInfo = () => {
+  if (
+    formTitle.value == '' ||
+    formAuthor.value == '' ||
+    formNumpages.value == '' ||
+    (document.getElementById('no').checked == false &&
+      document.getElementById('yes').checked == false)
+  )
+    return false;
+  else return true;
+};
+
 addBTN.addEventListener('click', () => {
   toggle([container, modalEL]);
   formTitle.focus();
 });
 
 submitBTN.addEventListener('click', () => {
-  createBook();
-  books[index].addBookToLibrary();
-  clearInputFields();
-  toggle([container, modalEL]);
-  index++;
-  displayBooks();
+  if (validInfo()) {
+    createBook();
+    books[index].addBookToLibrary();
+    clearInputFields();
+    toggle([container, modalEL]);
+    index++;
+    displayBooks();
+  }
 });
 
 cancelBTN.addEventListener('click', () => {
