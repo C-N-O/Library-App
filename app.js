@@ -47,7 +47,45 @@ const formNumpages = document.getElementById('formNumpages');
 const searchTitleEL = document.getElementById('searchTitle');
 const searchEL = document.querySelector('.search');
 
-let myLibrary = [];
+const detailEL = document.querySelector('.detail');
+
+let myLibrary = [
+  {
+    id: uuidv4(),
+    title: 'The Subtle Act of not giving a Bleep',
+    author: 'Mark Manson',
+    numPages: 212,
+    isCompleted: 'Yes',
+  },
+  {
+    id: uuidv4(),
+    title: 'Redefining Success',
+    author: 'Bret Wilson',
+    numPages: 252,
+    isCompleted: 'No',
+  },
+  {
+    id: uuidv4(),
+    title: 'Living the Good Life',
+    author: 'David Patchell',
+    numPages: 254,
+    isCompleted: 'No',
+  },
+  {
+    id: uuidv4(),
+    title: 'The Ideal Team Player',
+    author: 'Patrick Lencioni',
+    numPages: 219,
+    isCompleted: 'Yes',
+  },
+  {
+    id: uuidv4(),
+    title: 'The Advantage',
+    author: 'Patrick Lencioni',
+    numPages: 210,
+    isCompleted: 'Yes',
+  },
+];
 let index = 0;
 let books = [];
 
@@ -62,14 +100,44 @@ searchContainer.insertAdjacentHTML(
 const displayBooks = () => {
   myLibrary.forEach(function (el) {
     const html = `<div class="card">
-  <div class="title property">Title: ${el.title}</div>
-  <div class="author property">Author: ${el.author}</div>
-  <div class="numPages property">Number of Pages: ${el.numPages}</div>
-  <div class="isCompleted property">Completed: ${
-    el.isCompleted == 'yes' ? 'Yes' : 'No'
-  }</div>
+    <div class="bookTitleWrapper">
+    <div class="title property">${el.title}</div>
+    <div class="author property">Author: ${el.author}</div>
+    </div>
+    <div class="bookBtnWrapper">
+    <button class="cardBtn btnView"  onclick="showBookDetail('${el.id}')">VIEW</button>
+    <button class="cardBtn btnDelete" onclick="deleteBook('${el.id}')">DELETE</button>
+    </div>
+    
+  
 </div>`;
-    container.insertAdjacentHTML('beforeend', html);
+    container.insertAdjacentHTML('afterbegin', html);
+  });
+};
+
+deleteBook = (id) => {
+  console.log(id);
+  container.innerHTML = '';
+  myLibrary.forEach((el, index) => {
+    if (el.id == id) myLibrary.splice(index, 1);
+  });
+  displayBooks();
+  detailEL.innerHTML = '';
+};
+
+showBookDetail = (id) => {
+  detailEL.innerHTML = '';
+  myLibrary.forEach((el) => {
+    if (el.id == id) {
+      const html = `<div>
+<div class="titleEL">Title: ${el.title}</div>
+<div class="authorEL">Author: ${el.author}</div>
+<div class="numPagesEL">Number of Pages: ${el.numPages}</div>
+<div class="bookID">Book ID: ${el.id}</div>
+<div class="isCompletedEL">Finished Reading: ${el.isCompleted}</div>
+</div>`;
+      detailEL.insertAdjacentHTML('afterbegin', html);
+    }
   });
 };
 
@@ -77,8 +145,8 @@ const createBook = () => {
   container.innerHTML = '';
   books[index] = new Book(
     uuidv4(),
-    formTitle.value,
-    formAuthor.value,
+    formTitle.value.toLowerCase(),
+    formAuthor.value.toLowerCase(),
     formNumpages.value,
     bookIsCompleted()
   );
@@ -94,9 +162,9 @@ const clearInputFields = () => {
 
 bookIsCompleted = () => {
   if (document.getElementById('no').checked) {
-    return 'no';
+    return 'No';
   } else if (document.getElementById('yes').checked) {
-    return 'yes';
+    return 'Yes';
   }
 };
 
@@ -121,8 +189,10 @@ validInfo = () => {
 };
 
 addBTN.addEventListener('click', () => {
-  toggle([container, modalEL]);
-  formTitle.focus();
+  if (modalEL.classList.contains('hidden')) {
+    toggle([container, modalEL]);
+    formTitle.focus();
+  }
 });
 
 submitBTN.addEventListener('click', () => {
@@ -142,8 +212,10 @@ cancelBTN.addEventListener('click', () => {
 });
 
 findEL.addEventListener('click', () => {
-  toggle([searchContainer, searchModalEL]);
-  searchTitleEL.focus();
+  if (searchModalEL.classList.contains('hidden')) {
+    toggle([searchContainer, searchModalEL]);
+    searchTitleEL.focus();
+  }
 });
 
 searchEL.addEventListener('click', () => {
@@ -159,6 +231,8 @@ cancelSearchEL.addEventListener('click', () => {
 if (myLibrary.length == 0) {
   container.insertAdjacentHTML(
     'beforeend',
-    `<div class="card"><h2>You do not have any books in your library. Why not add one ☝️ </h2></div>`
+    `<div class="card"><h2>You have no books in your library. Why not add one ☝️ </h2></div>`
   );
+} else {
+  displayBooks();
 }
