@@ -49,57 +49,64 @@ const searchEL = document.querySelector('.search');
 
 const detailEL = document.querySelector('.detail');
 
-let myLibrary = [
-  {
-    id: uuidv4(),
-    title: 'The Subtle Act of not giving a Bleep',
-    author: 'Mark Manson',
-    numPages: 212,
-    isCompleted: 'Yes',
-  },
-  {
-    id: uuidv4(),
-    title: 'Redefining Success',
-    author: 'Bret Wilson',
-    numPages: 252,
-    isCompleted: 'No',
-  },
-  {
-    id: uuidv4(),
-    title: 'Living the Good Life',
-    author: 'David Patchell',
-    numPages: 254,
-    isCompleted: 'No',
-  },
-  {
-    id: uuidv4(),
-    title: 'The Ideal Team Player',
-    author: 'Patrick Lencioni',
-    numPages: 219,
-    isCompleted: 'Yes',
-  },
-  {
-    id: uuidv4(),
-    title: 'The Advantage',
-    author: 'Patrick Lencioni',
-    numPages: 210,
-    isCompleted: 'Yes',
-  },
-];
+// let myLibrary = [
+//   {
+//     id: uuidv4(),
+//     title: 'The Subtle Act of not giving a Bleep',
+//     author: 'Mark Manson',
+//     numPages: 212,
+//     isCompleted: 'Yes',
+//   },
+//   {
+//     id: uuidv4(),
+//     title: 'Redefining Success',
+//     author: 'Bret Wilson',
+//     numPages: 252,
+//     isCompleted: 'No',
+//   },
+//   {
+//     id: uuidv4(),
+//     title: 'Living the Good Life',
+//     author: 'David Patchell',
+//     numPages: 254,
+//     isCompleted: 'No',
+//   },
+//   {
+//     id: uuidv4(),
+//     title: 'The Ideal Team Player',
+//     author: 'Patrick Lencioni',
+//     numPages: 219,
+//     isCompleted: 'Yes',
+//   },
+//   {
+//     id: uuidv4(),
+//     title: 'The Advantage',
+//     author: 'Patrick Lencioni',
+//     numPages: 210,
+//     isCompleted: 'Yes',
+//   },
+// ];
 let index = 0;
 let books = [];
+let myLibrary;
+let searchResult = [];
 
-//do all these on page load
-modalEL.classList.add('hidden');
-searchModalEL.classList.add('hidden');
-searchContainer.insertAdjacentHTML(
-  'beforeend',
-  `<div class="card"><h2>Want to find a title? Click the Find button ☝️ </h2></div>`
-);
-
-const displayBooks = () => {
-  myLibrary.forEach(function (el) {
-    const html = `<div class="card">
+displayBooks = (bookList, htmlContainer) => {
+  if (bookList.length === 0) {
+    if (htmlContainer.classList.contains('container')) {
+      htmlContainer.insertAdjacentHTML(
+        'beforeend',
+        `<div class="card"><h2>You have no books in your library. Why not add one ☝️ </h2></div>`
+      );
+    } else if (htmlContainer.classList.contains('search-container')) {
+      htmlContainer.insertAdjacentHTML(
+        'beforeend',
+        `<div class="card"><h2>Want to find a Book? Click the Find button ☝️ </h2></div>`
+      );
+    }
+  } else {
+    bookList.forEach(function (el) {
+      const html = `<div class="card">
     <div class="bookTitleWrapper">
     <div class="title property">${el.title}</div>
     <div class="author property">Author: ${el.author}</div>
@@ -108,20 +115,31 @@ const displayBooks = () => {
     <button class="cardBtn btnView"  onclick="showBookDetail('${el.id}')">VIEW</button>
     <button class="cardBtn btnDelete" onclick="deleteBook('${el.id}')">DELETE</button>
     </div>
-    
-  
 </div>`;
-    container.insertAdjacentHTML('afterbegin', html);
-  });
+      htmlContainer.insertAdjacentHTML('afterbegin', html);
+    });
+  }
 };
 
 deleteBook = (id) => {
-  console.log(id);
-  container.innerHTML = '';
-  myLibrary.forEach((el, index) => {
-    if (el.id == id) myLibrary.splice(index, 1);
-  });
-  displayBooks();
+  if (myLibrary.length !== 0) {
+    container.innerHTML = '';
+    myLibrary.forEach((el, index) => {
+      if (el.id == id) myLibrary.splice(index, 1);
+    });
+    displayBooks(myLibrary, container);
+    localStorage.setItem('BookList', JSON.stringify(myLibrary));
+    ç;
+  }
+
+  if (searchResult.length !== 0) {
+    searchContainer.innerHTML = '';
+    searchResult.forEach((el, index) => {
+      if (el.id == id) searchResult.splice(index, 1);
+    });
+    displayBooks(searchResult, searchContainer);
+  }
+
   detailEL.innerHTML = '';
 };
 
@@ -130,11 +148,31 @@ showBookDetail = (id) => {
   myLibrary.forEach((el) => {
     if (el.id == id) {
       const html = `<div>
-<div class="titleEL">Title: ${el.title}</div>
-<div class="authorEL">Author: ${el.author}</div>
-<div class="numPagesEL">Number of Pages: ${el.numPages}</div>
-<div class="bookID">Book ID: ${el.id}</div>
-<div class="isCompletedEL">Finished Reading: ${el.isCompleted}</div>
+<div>
+<span class="detailTitle">Title:</span>
+<p>${el.title}</p>
+</div>
+
+<div>
+<span class="detailTitle">Author:</span>
+<p>${el.author}</p>
+</div>
+
+<div>
+<span class="detailTitle">Number of Pages:</span>
+<p>${el.numPages}</p>
+</div>
+
+<div>
+<span class="detailTitle">Book ID:</span>
+<p>${el.id}</p>
+</div>
+
+<div>
+<span class="detailTitle">Finished Reading:</span>
+<p>${el.isCompleted}</p>
+</div>
+
 </div>`;
       detailEL.insertAdjacentHTML('afterbegin', html);
     }
@@ -152,7 +190,37 @@ const createBook = () => {
   );
 };
 
-const clearInputFields = () => {
+search = () => {
+  const searchTerm = searchTitleEL.value;
+  myLibrary.map((el) => {
+    if (
+      searchTerm == el.id ||
+      searchTerm == el.author ||
+      searchTerm == el.title
+    ) {
+      searchResult.push(el);
+    }
+  });
+  displayBooks(searchResult, searchContainer);
+
+  if (searchResult.length === 0) {
+    searchContainer.innerHTML = '';
+    searchContainer.insertAdjacentHTML(
+      'beforeend',
+      `<div class="card"><h2>Your Search did not yield any result!</h2></div>`
+    );
+
+    setTimeout(() => {
+      searchContainer.innerHTML = '';
+      searchContainer.insertAdjacentHTML(
+        'beforeend',
+        `<div class="card"><h2>Want to find a book? Click the Find button ☝️ </h2></div>`
+      );
+    }, 5000);
+  }
+};
+
+clearInputFields = () => {
   formTitle.value = '';
   formAuthor.value = '';
   formNumpages.value = '';
@@ -199,10 +267,11 @@ submitBTN.addEventListener('click', () => {
   if (validInfo()) {
     createBook();
     books[index].addBookToLibrary();
+    localStorage.setItem('BookList', JSON.stringify(myLibrary));
     clearInputFields();
     toggle([container, modalEL]);
     index++;
-    displayBooks();
+    displayBooks(myLibrary, container);
   }
 });
 
@@ -212,6 +281,7 @@ cancelBTN.addEventListener('click', () => {
 });
 
 findEL.addEventListener('click', () => {
+  searchResult = [];
   if (searchModalEL.classList.contains('hidden')) {
     toggle([searchContainer, searchModalEL]);
     searchTitleEL.focus();
@@ -219,7 +289,10 @@ findEL.addEventListener('click', () => {
 });
 
 searchEL.addEventListener('click', () => {
-  console.log(searchTitleEL.value);
+  searchContainer.innerHTML = '';
+  toggle([searchContainer, searchModalEL]);
+  search();
+  searchTitleEL.value = '';
 });
 
 cancelSearchEL.addEventListener('click', () => {
@@ -227,12 +300,15 @@ cancelSearchEL.addEventListener('click', () => {
   searchTitleEL.value = '';
 });
 
-//display this card if Library is empty
-if (myLibrary.length == 0) {
-  container.insertAdjacentHTML(
-    'beforeend',
-    `<div class="card"><h2>You have no books in your library. Why not add one ☝️ </h2></div>`
-  );
-} else {
-  displayBooks();
-}
+initiateLocalStorage = () => {
+  if (localStorage.getItem('BookList') != null)
+    myLibrary = JSON.parse(localStorage.getItem('BookList'));
+  else myLibrary = [];
+};
+
+//do all these on page load
+modalEL.classList.add('hidden');
+searchModalEL.classList.add('hidden');
+initiateLocalStorage();
+displayBooks(myLibrary, container);
+displayBooks(searchResult, searchContainer);
